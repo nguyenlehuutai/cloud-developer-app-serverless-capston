@@ -2,12 +2,10 @@ import { History } from 'history'
 import { Form, Button, Icon, Divider } from 'semantic-ui-react'
 import * as React from 'react'
 import { Grid, Header, Loader } from 'semantic-ui-react'
-import { uploadFile } from '../api/todos-api'
 import Auth from '../auth/Auth'
 import {
   createProduct,
   deleteProduct,
-  getUploadUrl,
   getProducts
 } from '../api/product-api'
 import { Product } from '../types/Product'
@@ -112,7 +110,7 @@ export class Products extends React.PureComponent<ProductsProps, ProductState> {
       alert("Add new product successfully.");
       await this.loadProduct();
     } catch (e) {
-      alert('Could not upload a file: ' + e)
+      alert('Add new product failt. ' + e)
     }
   }
 
