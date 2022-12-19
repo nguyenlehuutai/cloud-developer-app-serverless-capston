@@ -3,6 +3,7 @@ import * as AWS from 'aws-sdk';
 const AWSXRay = require('aws-xray-sdk');
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { ProductItem } from '../models/ProductItem';
+import { ProductUpdate } from '../models/ProductUpdate';
 const XAWS = AWSXRay.captureAWS(AWS);
 
 const logger = createLogger('ProductsAccess')
@@ -45,6 +46,31 @@ export class ProductsAccess {
         }).promise();
 
         return product;
+    }
+    
+    async updateProduct(userId: string, productId: string, todoUpdate: ProductUpdate): Promise<ProductUpdate> {
+       
+        var params = {
+            TableName: this.productsTable,
+            Key: {
+                userId: userId,
+                productId: productId
+            },
+            UpdateExpression: 'set #dynobase_name = :name, dueDate = :dueDate, done = :done',
+            ExpressionAttributeValues: {
+                ':name': todoUpdate.name,
+                ':dueDate': todoUpdate.dueDate,
+                ':done': todoUpdate.done,
+            },
+            ExpressionAttributeNames: { "#dynobase_name": "name" }
+        };
+
+        await this.docClient.update(params, function (err, data) {
+            if (err) console.log(err);
+            else console.log(data);
+        }).promise();
+        
+        return todoUpdate;
     }
 
     async updateAttachmentUrl(userId: string, productId: string, uploadUrl: string): Promise<string> {

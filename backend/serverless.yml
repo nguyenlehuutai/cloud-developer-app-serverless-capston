@@ -80,6 +80,9 @@ custom:
       - name: CreateProductRequest
         contentType: application/json
         schema: ${file(models/create-product-model.json)}
+      - name: UpdateProductRequest
+        contentType: application/json
+        schema: ${file(models/update-product-model.json)}
 
 functions:
 
@@ -248,6 +251,31 @@ functions:
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PRODUCTS_TABLE}
 
   ## TODO: Configure this function
+  # Provide property for setting up CORS, Authorizer, iamRoleStatements, and request schemas
+    UpdateTodo:
+      handler: src/lambda/http/updateProduct.handler
+      events:
+        - http:
+            method: patch
+            path: products/{productId}
+            cors: true
+            authorizer: RS256Auth
+            reqValidatorName: RequestBodyValidator
+            documentation:
+              summary: Update a product
+              description: Update a product
+              requestModels:
+                'application/json': UpdateProductRequest
+            #request:
+            #  schemas:
+            #    application/json: ${file(models/update-todo-model.json)}
+      iamRoleStatements:
+        - Effect: Allow
+          Action:
+            - dynamodb:UpdateItem
+          Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PRODUCTS_TABLE}
+        
+  ## TODO: Configure this function
   # Provide property for setting up CORS, Authorizer, iamRoleStatements
   DeleteProduct:
     handler: src/lambda/http/deleteProduct.handler
@@ -265,26 +293,26 @@ functions:
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PRODUCTS_TABLE}
 
     ## TODO: Configure this function
-    # Provide property for setting up CORS, Authorizer, iamRoleStatements
-    GenerateUploadUrlProduct:
-      handler: src/lambda/http/generateUploadProductUrl.handler
-      events:
-        - http:
-            method: post
-            path: products/{productId}/attachment
-            cors: true
-            authorizer: RS256Auth
-            reqValidatorName: RequestBodyValidator
-      iamRoleStatements:
-        - Effect: Allow
-          Action:
-            - dynamodb:UpdateItem
-          Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PRODUCTS_TABLE}
-        - Effect: Allow
-          Action:
-            - s3:PutObject
-            - s3:GetObject
-      Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
+  # Provide property for setting up CORS, Authorizer, iamRoleStatements
+  generateUploadProductUrl:
+    handler: src/lambda/http/generateUploadProductUrl.handler
+    events:
+      - http:
+          method: post
+          path: products/{productId}/attachment
+          cors: true
+          authorizer: RS256Auth
+          reqValidatorName: RequestBodyValidator
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PRODUCTS_TABLE}
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:GetObject
+        Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
         
 resources:
   Resources:

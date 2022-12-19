@@ -3,6 +3,8 @@ import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
 import { CreateProductRequest } from '../requests/CreateProductRequest'
 import { ProductsAccess } from '../dataLayer/productAcess'
+import { ProductUpdate } from '../models/ProductUpdate'
+import { UpdateProductRequest } from '../requests/UpdateProductRequest'
 
 const logger = createLogger('businessLogic-products')
 
@@ -25,6 +27,14 @@ export async function createProduct(userId: string, newProduct: CreateProductReq
 export async function getProductsByUserId(userId: string): Promise<ProductItem[]> {
   logger.info('call products.getProductsByUserId: ' + userId);
   return productsAccess.getProductsByUserId(userId)
+}
+
+export async function updateProduct(userId: string, productId: string, updatedTodo: UpdateProductRequest): Promise<ProductUpdate> {
+  let todoUpdate: ProductUpdate = {
+    ...updatedTodo
+  }
+  logger.info('call todos.updateTodo: ' + userId + "," + productId + "," + todoUpdate);
+  return productsAccess.updateProduct(userId, productId, todoUpdate)
 }
 
 export async function updateAttachmentUrl(userId: string, productId: string, attachmentUrl: string): Promise<string> {

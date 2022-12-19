@@ -4,5 +4,6 @@ export interface ProductItem {
     createdAt: string
     title: string
     description?: string
+    attachmentUrl?: string
 }
   

@@ -1,7 +1,7 @@
 import { History } from 'history'
 import { Form, Button, Icon, Divider } from 'semantic-ui-react'
 import * as React from 'react'
-import { Grid, Header, Loader } from 'semantic-ui-react'
+import { Grid, Header, Loader,Image } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import {
   createProduct,
@@ -96,6 +96,11 @@ export class Products extends React.PureComponent<ProductsProps, ProductState> {
     this.setState({ description: event.target.value })
   }
 
+
+  onEditButtonClick = (productId: string) => {
+    this.props.history.push(`/products/${productId}/edit`)
+  }
+
   handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
@@ -164,6 +169,18 @@ export class Products extends React.PureComponent<ProductsProps, ProductState> {
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
                 <b>Description</b>: {product.description}
+                {product.attachmentUrl && (
+                  <Image src={product.attachmentUrl} size="small" wrapped />
+                )}
+              </Grid.Column>
+              <Grid.Column width={1} floated="right">
+                <Button
+                  icon
+                  color="blue"
+                  onClick={() => this.onEditButtonClick(product.productId)}
+                >
+                  <Icon name="pencil" />
+                </Button>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button

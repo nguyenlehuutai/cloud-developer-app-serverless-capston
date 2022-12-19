@@ -3,6 +3,7 @@ import { Link, Route, Router, Switch } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
+import { EditProduct } from './components/EditProduct'
 import { EditTodo } from './components/EditTodo'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
@@ -105,6 +106,14 @@ export default class App extends Component<AppProps, AppState> {
           exact
           render={props => {
             return <EditTodo {...props} auth={this.props.auth} />
+          }}
+        />
+
+        <Route
+          path="/products/:productId/edit"
+          exact
+          render={props => {
+            return <EditProduct {...props} auth={this.props.auth} />
           }}
         />
 
